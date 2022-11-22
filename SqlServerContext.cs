@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using OA.Models;
 namespace OA
@@ -19,6 +19,7 @@ namespace OA
         public DbSet<Token> token { get; set; }
         public DbSet<OAUser> oAUser { get; set; }
         public DbSet<User> user { get; set; }
+        public DbSet<OA.Models.EfTest>? EfTest { get; set; }
     }
 }
 
