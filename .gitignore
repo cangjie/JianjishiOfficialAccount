@@ -7,3 +7,4 @@ config.sqlServer
 *.dll
 *.so
 republish.sh
+access_token.official_account

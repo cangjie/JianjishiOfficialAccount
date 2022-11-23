@@ -8,7 +8,7 @@ namespace OA.Models
     {
         [Key]
         public int id { get; set; }
-        public string redirect_url { get; set; }
-        public int callbacked { get; set; }
+        public string redirect_url { get; set; } = "";
+        public int callbacked { get; set; } = 0;
     }
 }

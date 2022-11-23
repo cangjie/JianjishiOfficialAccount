@@ -126,9 +126,18 @@ namespace OA.Controllers
                 };
                 await _db.oARecevie.AddAsync(msg);
                 await _db.SaveChangesAsync();
+                try
+                {
+                    await (new UserController(_db, _config)).CheckUser(msg.FromUserName.Trim());
+                }
+                catch
+                {
+
+                }
                 //return ReturnMessage(msg);
-                
+
                 OfficialAccountReply reply = new OfficialAccountReply(_db, _config, msg);
+
                 return reply.Reply().Trim();
 
             }
@@ -136,6 +145,7 @@ namespace OA.Controllers
             {
 
             }
+            
             return "success";
         }
 
@@ -198,8 +208,8 @@ namespace OA.Controllers
                 }
                 else
                 {
-                    return tokenFilePath;
-                    //return "";
+                    //return tokenFilePath;
+                    return token;
                 }
             }
             string getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
@@ -211,8 +221,8 @@ namespace OA.Controllers
                 if (!at.access_token.Trim().Equals(""))
                 {
                     System.IO.File.AppendAllText(tokenFilePath, at.access_token + "\r\n" + nowTime);
-                    return tokenFilePath.Trim();
-                    //return at.access_token.Trim();
+                    //return tokenFilePath.Trim();
+                    return at.access_token.Trim();
                     //return "";
                 }
                 else
