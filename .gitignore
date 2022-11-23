@@ -8,3 +8,4 @@ config.sqlServer
 *.so
 republish.sh
 access_token.official_account
+/access_token.official_account
