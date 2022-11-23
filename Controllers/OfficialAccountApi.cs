@@ -219,9 +219,9 @@ namespace OA.Controllers
                     return "";
                 }
             }
-            catch
+            catch(Exception err)
             {
-                return "";
+                return err.ToString();
             }
 
         }
