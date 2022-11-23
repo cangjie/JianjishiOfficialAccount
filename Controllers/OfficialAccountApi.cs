@@ -198,7 +198,7 @@ namespace OA.Controllers
                 }
                 else
                 {
-                    return token.Trim();
+                    return tokenFilePath;
                     //return "";
                 }
             }
@@ -211,7 +211,8 @@ namespace OA.Controllers
                 if (!at.access_token.Trim().Equals(""))
                 {
                     System.IO.File.AppendAllText(tokenFilePath, at.access_token + "\r\n" + nowTime);
-                    return at.access_token.Trim();
+                    return tokenFilePath.Trim();
+                    //return at.access_token.Trim();
                     //return "";
                 }
                 else
@@ -219,9 +220,9 @@ namespace OA.Controllers
                     return "";
                 }
             }
-            catch
+            catch(Exception err)
             {
-                return "";
+                return err.ToString();
             }
 
         }
