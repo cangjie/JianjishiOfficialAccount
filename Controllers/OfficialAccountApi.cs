@@ -11,6 +11,11 @@ using Newtonsoft.Json;
 using System.Web;
 using System.Runtime;
 using OA.Controllers.Api;
+using System.IO.Pipelines;
+using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Net;
 
 namespace OA.Controllers
 {
@@ -37,6 +42,65 @@ namespace OA.Controllers
         {
             return echostr.Trim();
         }
+
+        [NonAction]
+        public void ShowQrCode(string ticket)
+        {
+            
+            string imgUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket.Trim();
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(imgUrl);
+            HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+            byte[] buf = new byte[1024 * 1024 * 100];
+            Stream s = res.GetResponseStream();
+            int i = s.ReadByte();
+            int j = 0;
+            while (i >= 0)
+            {
+                buf[j] = (byte)i;
+                i = s.ReadByte();
+                j++;
+            }
+            s.Close();
+            res.Close();
+            req.Abort();
+            byte[] buff = new byte[j];
+            for (int k = 0; k < j; k++)
+            {
+                buff[k] = buf[k];
+            }
+            Response.ContentType = "image/jpeg";
+            PipeWriter pw = Response.BodyWriter;
+            Stream sOut = pw.AsStream();
+            for (int k = 0; k < buff.Length; k++)
+            {
+                sOut.WriteByte(buff[k]);
+            }
+            sOut.Close();
+        }
+
+        [HttpGet]
+        public void ShowQrCodeStatic(string scene)
+        {
+            string token = GetAccessToken().Trim();
+            string url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + token.Trim();
+            string postData = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"" + scene.Trim() + "\"}}}";
+            string jsonStr = Util.GetWebContent(url, postData).Trim();
+            Newtonsoft.Json.Linq.JToken json = (Newtonsoft.Json.Linq.JToken)JsonConvert.DeserializeObject(jsonStr);
+            ShowQrCode(json["ticket"].ToString().Trim());
+            //Util.GetWebContent()
+        }
+
+        [HttpGet]
+        public void ShowQrCodeDynamic(string scene, int expire)
+        {
+            string token = GetAccessToken().Trim();
+            string url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + token.Trim();
+            string postData = "{\"expire_seconds\": " + expire.ToString() + ", \"action_name\": \"QR_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"" + scene.Trim() + "\"}}}";
+            string jsonStr = Util.GetWebContent(url, postData).Trim();
+            Newtonsoft.Json.Linq.JToken json = (Newtonsoft.Json.Linq.JToken)JsonConvert.DeserializeObject(jsonStr);
+            ShowQrCode(json["ticket"].ToString().Trim());
+        }
+       
 
         [HttpPost]
         public async Task<ActionResult<string>> PushMessage([FromQuery] string signature,
