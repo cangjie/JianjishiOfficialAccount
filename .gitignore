@@ -6,3 +6,4 @@ appsettings.json
 config.sqlServer
 *.dll
 *.so
+republish.sh
