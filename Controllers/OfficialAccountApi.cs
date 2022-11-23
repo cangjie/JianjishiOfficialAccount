@@ -211,7 +211,8 @@ namespace OA.Controllers
                 if (!at.access_token.Trim().Equals(""))
                 {
                     System.IO.File.AppendAllText(tokenFilePath, at.access_token + "\r\n" + nowTime);
-                    return at.access_token.Trim();
+                    return tokenFilePath.Trim();
+                    //return at.access_token.Trim();
                     //return "";
                 }
                 else
