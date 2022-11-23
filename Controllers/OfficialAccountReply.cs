@@ -47,6 +47,21 @@ namespace OA.Controllers.Api
                         break;
                 }
             }
+            else
+            {
+                switch (_message.EventKey.Trim().ToLower())
+                {
+                    case "service":
+                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbFKyZo5dizp0Q7_N0kaPa1oj-XXNGzEaRAtlcyOWImrE").InnerXml.Trim();
+                        break;
+                    case "shop":
+                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIwjpc5QZz7L4wnb3f4CSp0YYV8IF__i3LSrIBIWJStb").InnerXml.Trim();
+                        break;
+                    default:
+                        retStr = "success";
+                        break;
+                }
+            }
             return retStr.Trim();
         }
 
