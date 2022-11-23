@@ -198,7 +198,7 @@ namespace OA.Controllers
                 }
                 else
                 {
-                    return token.Trim();
+                    return tokenFilePath;
                     //return "";
                 }
             }
