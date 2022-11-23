@@ -36,6 +36,27 @@ namespace OA.Controllers.Api
                     case "海报":
                         retStr = GetPoster().InnerXml.Trim();
                         break;
+                    case "1":
+                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbFKyZo5dizp0Q7_N0kaPa1oj-XXNGzEaRAtlcyOWImrE").InnerXml.Trim();
+                        break;
+                    case "2":
+                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIwjpc5QZz7L4wnb3f4CSp0YYV8IF__i3LSrIBIWJStb").InnerXml.Trim();
+                        break;
+                    default:
+                        retStr = "success";
+                        break;
+                }
+            }
+            else
+            {
+                switch (_message.EventKey.Trim().ToLower())
+                {
+                    case "service":
+                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbFKyZo5dizp0Q7_N0kaPa1oj-XXNGzEaRAtlcyOWImrE").InnerXml.Trim();
+                        break;
+                    case "shop":
+                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIwjpc5QZz7L4wnb3f4CSp0YYV8IF__i3LSrIBIWJStb").InnerXml.Trim();
+                        break;
                     default:
                         retStr = "success";
                         break;
@@ -53,6 +74,21 @@ namespace OA.Controllers.Api
                 + "<CreateTime >" + Util.GetLongTimeStamp(DateTime.Now) + "</CreateTime>"
                 + "<MsgType><![CDATA[text]]></MsgType>"
                 + "<Content><![CDATA[<a href=\"http://weixin.luqinwenda.com/service/3\" >点击查看海报</a>]]></Content>"
+                + "</xml>");
+            return xmlD;
+        }
+
+        public XmlDocument GetImageMessage(string mediaId)
+        {
+            XmlDocument xmlD = new XmlDocument();
+            xmlD.LoadXml("<xml>"
+                + "<ToUserName><![CDATA[" + _message.FromUserName.Trim() + "]]></ToUserName>"
+                + "<FromUserName ><![CDATA[" + _settings.originalId.Trim() + "]]></FromUserName>"
+                + "<CreateTime >" + Util.GetLongTimeStamp(DateTime.Now) + "</CreateTime>"
+                + "<MsgType><![CDATA[image]]></MsgType>"
+                + "<Image>"
+                + "<MediaId><![CDATA[" + mediaId + "]]></MediaId>"
+                + "</Image>"
                 + "</xml>");
             return xmlD;
         }
