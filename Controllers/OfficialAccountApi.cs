@@ -148,9 +148,9 @@ namespace OA.Controllers
         }
 
         [HttpGet]
-        public void RefreshAccessToken()
+        public string RefreshAccessToken()
         {
-            GetAccessToken();
+            return GetAccessToken();
         }
 
         [NonAction]
