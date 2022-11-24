@@ -42,7 +42,7 @@ namespace OA.Controllers.Api
             if (tokenList.Count > 0)
             {
                 string openId = tokenList[0].open_id.Trim();
-                CheckUser(openId.Trim());
+                await CheckUser(openId.Trim());
                 return true;
             }
             return false;
@@ -68,10 +68,10 @@ namespace OA.Controllers.Api
         }
 
         [NonAction]
-        public int SetToken(string token, string openId, int expireSeconds)
+        public async Task<ActionResult<int>> SetToken(string token, string openId, int expireSeconds)
         {
 
-            int userId = CheckUser(openId);
+            int userId = (int)(await CheckUser(openId)).Value;
             if (userId == 0)
             {
                 return 0;
@@ -113,11 +113,11 @@ namespace OA.Controllers.Api
         }
 
         [NonAction]
-        public int CheckUser(string openId)
+        public async Task<ActionResult<int>> CheckUser(string openId)
         {
             int userId = 0;
-            var oaUserList = _db.oAUser.Where(u => (u.original_id.Trim().Equals(_settings.originalId.Trim())
-                && u.open_id.Trim().Equals(openId.Trim()))).ToList();
+            var oaUserList = await _db.oAUser.Where(u => (u.original_id.Trim().Equals(_settings.originalId.Trim())
+                && u.open_id.Trim().Equals(openId.Trim()))).ToListAsync();
             if (oaUserList.Count == 0)
             {
                 OfficialAccountApi oaApi = new OfficialAccountApi(_db, _config);
@@ -126,7 +126,7 @@ namespace OA.Controllers.Api
                 {
                     return 0;
                 }
-                var userList = _db.user.Where(u => u.oa_union_id.Trim().Equals(unionId)).ToList();
+                var userList = await _db.user.Where(u => u.oa_union_id.Trim().Equals(unionId)).ToListAsync();
                 if (userList.Count == 0)
                 {
                     User user = new User()
@@ -134,8 +134,8 @@ namespace OA.Controllers.Api
                         id = 0,
                         oa_union_id = unionId.Trim()
                     };
-                    _db.user.Add(user);
-                    _db.SaveChanges();
+                    await _db.user.AddAsync(user);
+                    await _db.SaveChangesAsync();
 
                     userId = user.id;
                 }
@@ -154,8 +154,8 @@ namespace OA.Controllers.Api
                     open_id = openId.Trim(),
                     original_id = _settings.originalId.Trim()
                 };
-                _db.oAUser.Add(oaUser);
-                _db.SaveChanges();
+                await _db.oAUser.AddAsync(oaUser);
+                await _db.SaveChangesAsync();
                 if (oaUser.id == 0)
                 {
                     return 0;

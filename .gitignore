@@ -4,3 +4,8 @@ obj/
 appsettings.*.json
 appsettings.json
 config.sqlServer
+*.dll
+*.so
+republish.sh
+access_token.official_account
+/access_token.official_account
