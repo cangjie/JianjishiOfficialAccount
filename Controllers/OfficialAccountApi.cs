@@ -13,8 +13,6 @@ using System.Runtime;
 using OA.Controllers.Api;
 using System.IO.Pipelines;
 using System.Net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System.Net;
 
 namespace OA.Controllers
