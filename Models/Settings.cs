@@ -10,6 +10,7 @@ namespace OA.Models
         public string appSecret { get; set; } = "";
         public string originalId { get; set; } = "";
         public string token { get; set; } = "";
+        public string domainName { get; set; } = "";
 
         public static Settings GetSettings(IConfiguration config)
         {
@@ -19,13 +20,14 @@ namespace OA.Models
             var appSecret = settings.GetSection("AppSecret").Value;
             var originalId = settings.GetSection("OriginalId").Value;
             var token = settings.GetSection("token").Value;
-            
+            var domainName = settings.GetSection("DomainName").Value;
             return new Settings()
             {
                 appId = appId == null? "" : appId.Trim(),
                 appSecret = appSecret == null ? "" : appSecret.Trim(),
                 originalId = originalId == null ? "" : originalId.Trim() ,
-                token = token == null ? "" :token.Trim()
+                token = token == null ? "" :token.Trim(),
+                domainName = domainName == null ? "" : domainName.Trim()
             };
         }
     }

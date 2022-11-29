@@ -3,7 +3,7 @@ using System.Xml;
 using Microsoft.Extensions.Configuration;
 using OA;
 using OA.Models;
-
+using System.Threading.Tasks;
 
 namespace OA.Controllers.Api
 {
@@ -17,30 +17,39 @@ namespace OA.Controllers.Api
 
         private readonly OARecevie _message;
 
+        private string _domain = "";
+
         public OfficialAccountReply(SqlServerContext context,
             IConfiguration config, OARecevie message)
         {
             _db = context;
             _config = config;
             _settings = Settings.GetSettings(_config);
+            _domain = _settings.domainName.Trim();
             _message = message;
         }
 
-        public string Reply()
+        public async Task<string> Reply()
         {
             string retStr = "success";
+            string openId = _message.FromUserName.Trim();
+            UserController userHelper = new UserController(_db, _config);
             if (_message.MsgType.Trim().ToLower().Equals("text"))
             {
                 switch (_message.Content.Trim().ToLower())
                 {
-                    case "海报":
-                        retStr = GetPoster().InnerXml.Trim();
-                        break;
+                    
                     case "1":
                         retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbFKyZo5dizp0Q7_N0kaPa1oj-XXNGzEaRAtlcyOWImrE").InnerXml.Trim();
                         break;
                     case "2":
                         retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIwjpc5QZz7L4wnb3f4CSp0YYV8IF__i3LSrIBIWJStb").InnerXml.Trim();
+                        break;
+                    case "二维码":
+                        int userId = (await userHelper.CheckUser(openId.Trim())).Value;
+                        retStr = GetTextMessage("<a href=\"http://" + _domain.Trim()
+                            + "/api/OfficialAccountApi/ShowQrCodeDynamic?expire=259200&scene=freereserve_originuser_"
+                            + userId.ToString() + "\" >点击查看二维码</a>").InnerXml.Trim();
                         break;
                     default:
                         retStr = "success";
@@ -65,7 +74,7 @@ namespace OA.Controllers.Api
             return retStr.Trim();
         }
 
-        public XmlDocument GetPoster()
+        public XmlDocument GetTextMessage(string content)
         {
             XmlDocument xmlD = new XmlDocument();
             xmlD.LoadXml("<xml>"
@@ -73,10 +82,13 @@ namespace OA.Controllers.Api
                 + "<FromUserName ><![CDATA[" + _settings.originalId.Trim() + "]]></FromUserName>"
                 + "<CreateTime >" + Util.GetLongTimeStamp(DateTime.Now) + "</CreateTime>"
                 + "<MsgType><![CDATA[text]]></MsgType>"
-                + "<Content><![CDATA[<a href=\"http://weixin.luqinwenda.com/service/3\" >点击查看海报</a>]]></Content>"
+                //+ "<Content><![CDATA[<a href=\"http://weixin.luqinwenda.com/service/3\" >点击查看海报</a>]]></Content>"
+                + "<Content><![CDATA[" + content.Trim() + "]]></Content>"
                 + "</xml>");
             return xmlD;
         }
+
+
 
         public XmlDocument GetImageMessage(string mediaId)
         {

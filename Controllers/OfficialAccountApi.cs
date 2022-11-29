@@ -13,7 +13,6 @@ using System.Runtime;
 using OA.Controllers.Api;
 using System.IO.Pipelines;
 using System.Net;
-using System.Net;
 
 namespace OA.Controllers
 {
@@ -72,6 +71,7 @@ namespace OA.Controllers
             for (int k = 0; k < buff.Length; k++)
             {
                 sOut.WriteByte(buff[k]);
+                
             }
             sOut.Close();
         }
@@ -200,7 +200,7 @@ namespace OA.Controllers
 
                 OfficialAccountReply reply = new OfficialAccountReply(_db, _config, msg);
 
-                return reply.Reply().Trim();
+                return (await reply.Reply()).Trim();
 
             }
             catch
@@ -216,7 +216,7 @@ namespace OA.Controllers
         {
             OARecevie msg = await _db.oARecevie.FindAsync(id);
             OfficialAccountReply reply = new OfficialAccountReply(_db, _config, msg);
-            return reply.Reply();
+            return await reply.Reply();
         }
 
         [HttpGet]
