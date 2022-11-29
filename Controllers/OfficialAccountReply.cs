@@ -49,7 +49,7 @@ namespace OA.Controllers.Api
                         int userId = (await userHelper.CheckUser(openId.Trim())).Value;
                         retStr = GetTextMessage("<a href='http://" + _domain.Trim()
                             + "/api/OfficialAccountApi/ShowQrCodeDynamic?expire=259200&scene=freereserve_originuser_"
-                            + userId.ToString() + "' 点击查看二维码</a>").InnerXml.Trim();
+                            + userId.ToString() + "'  >点击查看二维码</a>").InnerXml.Trim();
                         break;
                     default:
                         retStr = "success";
