@@ -220,9 +220,9 @@ namespace OA.Controllers
         }
 
         [HttpGet]
-        public string RefreshAccessToken()
+        public void RefreshAccessToken()
         {
-            return GetAccessToken();
+            GetAccessToken();
         }
 
         [NonAction]

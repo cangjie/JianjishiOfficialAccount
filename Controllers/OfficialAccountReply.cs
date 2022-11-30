@@ -58,21 +58,55 @@ namespace OA.Controllers.Api
             }
             else
             {
-                switch (_message.EventKey.Trim().ToLower())
+                switch (_message.Event.ToLower().Trim())
                 {
-                    case "service":
-                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbFKyZo5dizp0Q7_N0kaPa1oj-XXNGzEaRAtlcyOWImrE").InnerXml.Trim();
+                    case "click":
+                        switch (_message.EventKey.Trim().ToLower())
+                        {
+                            case "service":
+                                retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbFKyZo5dizp0Q7_N0kaPa1oj-XXNGzEaRAtlcyOWImrE").InnerXml.Trim();
+                                break;
+                            case "shop":
+                                retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIwjpc5QZz7L4wnb3f4CSp0YYV8IF__i3LSrIBIWJStb").InnerXml.Trim();
+                                break;
+                            default:
+                                retStr = "success";
+                                break;
+                        }
                         break;
-                    case "shop":
-                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIwjpc5QZz7L4wnb3f4CSp0YYV8IF__i3LSrIBIWJStb").InnerXml.Trim();
+                    case "subscribe":
+                    case "scan":
+                        DealSubscribe(_message);
                         break;
                     default:
                         retStr = "success";
                         break;
                 }
+
+                
             }
             return retStr.Trim();
         }
+
+        public string DealSubscribe(OARecevie message)
+        {
+            SendServiceMessageMApp(message.FromUserName.Trim(), "免费体验预约", "pages/reserve/reserve", "6saVwTsGr7hh8G_dlZdVbFuyMJekFzMY-zsH18dhDZiJnJCGSKg4qD-mK8ed-Tvc");
+            return "success";
+        }
+
+        public void SendServiceMessageMApp(string openId, string title, string path, string mediaId)
+        {
+            string appId = _settings.miniAppId.Trim();
+            //Util.GetWebContent()
+            string postJson = "{\"touser\":\"" + openId + "\",  \"msgtype\":\"miniprogrampage\",    \"miniprogrampage\": {"
+                + "\"title\":\"" + title + "\",    \"appid\":\"" + appId + "\", "
+                + "\"pagepath\":\"" + path + "\",        \"thumb_media_id\":\"" + mediaId + "\"   }}";
+            OfficialAccountApi oaHelper = new OfficialAccountApi(_db, _config);
+            string token = oaHelper.GetAccessToken();
+            string postUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + token.Trim();
+            Console.WriteLine(Util.GetWebContent(postUrl, postJson));
+        }
+
 
         public XmlDocument GetTextMessage(string content)
         {
