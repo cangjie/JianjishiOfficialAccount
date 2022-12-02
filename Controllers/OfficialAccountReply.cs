@@ -107,6 +107,17 @@ namespace OA.Controllers.Api
             Console.WriteLine(Util.GetWebContent(postUrl, postJson));
         }
 
+        /*
+        public void SendServiceMessageText(string openId, string content)
+        {
+            string postJson = "{\"touser\":\"" + openId + "\",  \"msgtype\":\"text\",    \"text\": {"
+                + "\"content\":\"" + content + "\"   }}";
+            OfficialAccountApi oaHelper = new OfficialAccountApi(_db, _config);
+            string token = oaHelper.GetAccessToken();
+            string postUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + token.Trim();
+            Console.WriteLine(Util.GetWebContent(postUrl, postJson));
+        }
+        */
 
         public XmlDocument GetTextMessage(string content)
         {
@@ -121,6 +132,8 @@ namespace OA.Controllers.Api
                 + "</xml>");
             return xmlD;
         }
+
+
 
 
 

@@ -11,7 +11,7 @@ namespace OA
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            //modelBuilder.Entity<MiniApp.Models.MiniSession>().HasKey(c => new { c.original_id, c.session_key });
         }
 
         public DbSet<OARecevie> oARecevie { get; set; }
@@ -20,6 +20,7 @@ namespace OA
         public DbSet<OAUser> oAUser { get; set; }
         public DbSet<User> user { get; set; }
         public DbSet<OA.Models.EfTest>? EfTest { get; set; }
+        //public DbSet<MiniApp.Models.MiniSession> miniSession { get; set; }
     }
 }
 
