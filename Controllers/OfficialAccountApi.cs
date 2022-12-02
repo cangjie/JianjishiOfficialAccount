@@ -39,7 +39,7 @@ namespace OA.Controllers
         {
             DateTime now = DateTime.Now;
             
-            return now.ToLocalTime().ToString() + " " + Util.GetLongTimeStamp(now);
+            return now.ToUniversalTime().ToString() + " " +  now.ToLocalTime().ToString() + " " + Util.GetLongTimeStamp(now);
         }
 
         [HttpGet]
