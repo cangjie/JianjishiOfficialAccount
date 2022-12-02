@@ -35,6 +35,13 @@ namespace OA.Controllers
         }
 
         [HttpGet]
+        public ActionResult<string> ShowTime()
+        {
+            DateTime now = DateTime.Now;
+            return now.ToString() + " " + Util.GetLongTimeStamp(now);
+        }
+
+        [HttpGet]
         public async Task<ActionResult<string>> PushMessage(string signature,
             string timestamp, string nonce, string echostr)
         {
@@ -239,6 +246,8 @@ namespace OA.Controllers
         {
             GetAccessToken();
         }
+
+        
 
         [NonAction]
         public string GetAccessToken()
