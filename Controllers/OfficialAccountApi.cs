@@ -85,8 +85,8 @@ namespace OA.Controllers
             sOut.Close();
         }
         
-        [HttpGet("{unionId}")]
-        public  ActionResult<string> SendTextServiceMessage(string unionId, string content)
+        [HttpPost("{unionId}")]
+        public  ActionResult<string> SendTextServiceMessage([FromQuery]string unionId, [FromBody]string content)
         {
             unionId = Util.UrlDecode(unionId);
             User user = _db.user.Where(u => u.oa_union_id.Trim().Equals(unionId.Trim())).First();
