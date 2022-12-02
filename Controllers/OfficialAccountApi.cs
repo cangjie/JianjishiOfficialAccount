@@ -85,12 +85,18 @@ namespace OA.Controllers
             sOut.Close();
         }
         
-        [HttpPost("{unionId}")]
-        public  ActionResult<string> SendTextServiceMessage(string unionId, [FromBody]string content)
+        [HttpPost]
+        public async  Task<ActionResult<string>> SendTextServiceMessage([FromQuery]string unionId)
         {
             unionId = Util.UrlDecode(unionId);
             User user = _db.user.Where(u => u.oa_union_id.Trim().Equals(unionId.Trim())).First();
             OAUser oaUser = _db.oAUser.Where(u => u.user_id == user.id).First();
+           // string content = "";
+            Stream stream = Request.Body;
+            StreamReader sr = new StreamReader(stream);
+            string content = (await sr.ReadToEndAsync());
+
+
             string postJson = "{\"touser\":\"" + oaUser.open_id.Trim() + "\",  \"msgtype\":\"text\",    \"text\": {"
                 + "\"content\":\"" + content + "\"   }}";
             //OfficialAccountApi oaHelper = new OfficialAccountApi(_db, _config);
