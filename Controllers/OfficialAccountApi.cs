@@ -37,8 +37,9 @@ namespace OA.Controllers
         [HttpGet]
         public ActionResult<string> ShowTime()
         {
-            DateTime now = System.DateTime.Now.ToLocalTime();
-            return now.ToString() + " " + Util.GetLongTimeStamp(now);
+            DateTime now = DateTime.Now;
+            
+            return now.ToLocalTime().ToString() + " " + Util.GetLongTimeStamp(now);
         }
 
         [HttpGet]
