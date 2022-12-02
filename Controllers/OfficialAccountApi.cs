@@ -13,7 +13,8 @@ using System.Runtime;
 using OA.Controllers.Api;
 using System.IO.Pipelines;
 using System.Net;
-
+//using MiniApp.Models;
+using System.Threading.Tasks;
 namespace OA.Controllers
 {
     [Route("api/[controller]/[Action]")]
@@ -75,7 +76,21 @@ namespace OA.Controllers
             }
             sOut.Close();
         }
-
+        
+        [HttpGet("{unionId}")]
+        public  ActionResult<string> SendTextServiceMessage(string unionId, string content)
+        {
+            unionId = Util.UrlDecode(unionId);
+            User user = _db.user.Where(u => u.oa_union_id.Trim().Equals(unionId.Trim())).First();
+            OAUser oaUser = _db.oAUser.Where(u => u.user_id == user.id).First();
+            string postJson = "{\"touser\":\"" + oaUser.open_id.Trim() + "\",  \"msgtype\":\"text\",    \"text\": {"
+                + "\"content\":\"" + content + "\"   }}";
+            //OfficialAccountApi oaHelper = new OfficialAccountApi(_db, _config);
+            string token = GetAccessToken();
+            string postUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + token.Trim();
+            return (Util.GetWebContent(postUrl, postJson));
+        }
+        
         [HttpGet]
         public void ShowQrCodeStatic(string scene)
         {
