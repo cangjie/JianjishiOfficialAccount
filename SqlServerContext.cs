@@ -20,6 +20,7 @@ namespace OA
         public DbSet<OAUser> oAUser { get; set; }
         public DbSet<User> user { get; set; }
         public DbSet<OA.Models.EfTest>? EfTest { get; set; }
+        
         //public DbSet<MiniApp.Models.MiniSession> miniSession { get; set; }
     }
 }

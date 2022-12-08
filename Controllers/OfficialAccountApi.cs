@@ -96,7 +96,8 @@ namespace OA.Controllers
             StreamReader sr = new StreamReader(stream);
             string content = (await sr.ReadToEndAsync());
 
-
+            sr.Close();
+            stream.Close();
             string postJson = "{\"touser\":\"" + oaUser.open_id.Trim() + "\",  \"msgtype\":\"text\",    \"text\": {"
                 + "\"content\":\"" + content + "\"   }}";
             //OfficialAccountApi oaHelper = new OfficialAccountApi(_db, _config);

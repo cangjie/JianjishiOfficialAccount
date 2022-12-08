@@ -90,7 +90,7 @@ namespace OA.Controllers.Api
 
         public string DealSubscribe(OARecevie message)
         {
-            SendServiceMessageMApp(message.FromUserName.Trim(), "免费体验预约", "pages/reserve/reserve", "6saVwTsGr7hh8G_dlZdVbFuyMJekFzMY-zsH18dhDZiJnJCGSKg4qD-mK8ed-Tvc");
+            SendServiceMessageMApp(message.FromUserName.Trim(), "点我预约", "pages/reserve/reserve", "6saVwTsGr7hh8G_dlZdVbFuyMJekFzMY-zsH18dhDZiJnJCGSKg4qD-mK8ed-Tvc");
             return "success";
         }
 
