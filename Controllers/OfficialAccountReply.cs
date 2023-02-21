@@ -51,6 +51,10 @@ namespace OA.Controllers.Api
                             + "/api/OfficialAccountApi/ShowQrCodeDynamic?expire=259200&scene=freereserve_originuser_"
                             + userId.ToString() + "'  >点击查看二维码</a>").InnerXml.Trim();
                         break;
+                    case "预约":
+                        SendServiceMessageText(openId.Trim(), "预约电话139-0116-2727，或添加下方二维码。");
+                        retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIAOuNjYwxmR5ZKOs-txBolkwD8j7iK8sWvdhh1iidmo").InnerXml.Trim();
+                        break;
                     default:
                         retStr = "success";
                         break;
@@ -107,7 +111,7 @@ namespace OA.Controllers.Api
             Console.WriteLine(Util.GetWebContent(postUrl, postJson));
         }
 
-        /*
+        
         public void SendServiceMessageText(string openId, string content)
         {
             string postJson = "{\"touser\":\"" + openId + "\",  \"msgtype\":\"text\",    \"text\": {"
@@ -117,7 +121,7 @@ namespace OA.Controllers.Api
             string postUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + token.Trim();
             Console.WriteLine(Util.GetWebContent(postUrl, postJson));
         }
-        */
+        
 
         public XmlDocument GetTextMessage(string content)
         {
