@@ -10,3 +10,5 @@ config.sqlServer
 republish.sh
 access_token.official_account
 /access_token.official_account
+*.sln
+.vscode/*
