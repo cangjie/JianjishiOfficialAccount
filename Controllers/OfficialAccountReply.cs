@@ -34,6 +34,9 @@ namespace OA.Controllers.Api
             string retStr = "success";
             string openId = _message.FromUserName.Trim();
             UserController userHelper = new UserController(_db, _config);
+            int userId =  (await userHelper.CheckUser(openId.Trim())).Value;
+            MiniUser? mUser = await _db.miniUser.FindAsync(userId);
+            
             if (_message.MsgType.Trim().ToLower().Equals("text"))
             {
                 switch (_message.Content.Trim().ToLower())
@@ -46,7 +49,7 @@ namespace OA.Controllers.Api
                         retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIwjpc5QZz7L4wnb3f4CSp0YYV8IF__i3LSrIBIWJStb").InnerXml.Trim();
                         break;
                     case "二维码":
-                        int userId = (await userHelper.CheckUser(openId.Trim())).Value;
+                        //int userId = (await userHelper.CheckUser(openId.Trim())).Value;
                         retStr = GetTextMessage("<a href='http://" + _domain.Trim()
                             + "/api/OfficialAccountApi/ShowQrCodeDynamic?expire=259200&scene=freereserve_originuser_"
                             + userId.ToString() + "'  >点击查看二维码</a>").InnerXml.Trim();
@@ -54,6 +57,14 @@ namespace OA.Controllers.Api
                     case "预约":
                         SendServiceMessageText(openId.Trim(), "预约电话139-0116-2727，或添加下方二维码。");
                         retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIAOuNjYwxmR5ZKOs-txBolkwD8j7iK8sWvdhh1iidmo").InnerXml.Trim();
+                        break;
+                    case "后台":
+                        if (mUser != null)
+                        {
+                            retStr = GetTextMessage("<a data-miniprogram-appid=\"" + _settings.miniAppId.Trim() + "\" "
+                                + " data-miniprogram-path=\"/pages/admin/admnin\" >登录后台</a>").InnerXml.Trim();
+                        }
+
                         break;
                     default:
                         retStr = "success";
