@@ -19,8 +19,8 @@ namespace OA
         public DbSet<Token> token { get; set; }
         public DbSet<OAUser> oAUser { get; set; }
         public DbSet<User> user { get; set; }
-        public DbSet<OA.Models.EfTest>? EfTest { get; set; }
-        
+        public DbSet<EfTest>? EfTest { get; set; }
+        public DbSet<MiniUser> miniUser { get; set; }
         //public DbSet<MiniApp.Models.MiniSession> miniSession { get; set; }
     }
 }
