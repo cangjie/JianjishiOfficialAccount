@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using OA;
 using OA.Models;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace OA.Controllers.Api
 {
@@ -35,7 +36,18 @@ namespace OA.Controllers.Api
             string openId = _message.FromUserName.Trim();
             UserController userHelper = new UserController(_db, _config);
             int userId =  (await userHelper.CheckUser(openId.Trim())).Value;
-            MiniUser? mUser = await _db.miniUser.FindAsync(userId);
+            User? user = await _db.user.FindAsync(userId);
+            MiniUser? mUser = await _db.miniUser.FindAsync(0);
+            if (user != null)
+            {
+                var mUserList = await _db.miniUser.Where(m => m.union_id != null
+                    && m.union_id.Trim().Equals(user.oa_union_id)).ToListAsync();
+                if (mUserList.Count > 0)
+                {
+                    mUser = mUserList[0];
+                }
+            }
+            
             
             if (_message.MsgType.Trim().ToLower().Equals("text"))
             {
@@ -59,7 +71,7 @@ namespace OA.Controllers.Api
                         retStr = GetImageMessage("6saVwTsGr7hh8G_dlZdVbIAOuNjYwxmR5ZKOs-txBolkwD8j7iK8sWvdhh1iidmo").InnerXml.Trim();
                         break;
                     case "后台":
-                        if (mUser != null)
+                        if (mUser != null && mUser.staff == 1)
                         {
                             retStr = GetTextMessage("<a data-miniprogram-appid=\"" + _settings.miniAppId.Trim() + "\" "
                                 + " data-miniprogram-path=\"/pages/admin/admnin\" >登录后台</a>").InnerXml.Trim();
