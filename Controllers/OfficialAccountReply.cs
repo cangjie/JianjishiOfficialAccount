@@ -74,7 +74,7 @@ namespace OA.Controllers.Api
                         if (mUser != null && mUser.staff == 1)
                         {
                             retStr = GetTextMessage("<a data-miniprogram-appid=\"" + _settings.miniAppId.Trim() + "\" "
-                                + " data-miniprogram-path=\"pages/admin/admnin\" >登录后台</a>").InnerXml.Trim();
+                                + " data-miniprogram-path=\"pages/admin/admin\" >登录后台</a>").InnerXml.Trim();
                         }
 
                         break;
