@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script type="text/javascript" >
+
+
+        function getQueryString(name) {
+            var query_string =  window.location.search
+            if (!query_string) return null; // 如果无参，返回null
+            var re = /[?&]?([^=]+)=([^&]*)/g;
+            var tokens;
+            while (tokens = re.exec(query_string)) {
+                if (decodeURIComponent(tokens[1]) === name) {
+                    return decodeURIComponent(tokens[2]);
+                }
+            }
+            return null;
+        }
+
+        var id = getQueryString('id');
+        //alert(id);
+        switch (id) {
+            case '1':
+                window.location.href = 'https://u4537284.viewer.maka.im/k/PN0AEV02';
+                break;
+            case '2':
+                window.location.href = 'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzU1MjY5MTQxOA==&action=getalbum&album_id=1826760707111993349#wechat_redirect';
+                break;
+            default:
+                window.location.href = 'https://weixin.kbjcc.cc/html/pm/weixin_auth.html?clinicCode=jjs001&pageCode=patientIndex&authType=1';
+                break;
+        }
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
