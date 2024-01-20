@@ -7,15 +7,18 @@ using System.IO.Pipelines;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Net;
+using System.Security.Policy;
+
 namespace OA.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ImageHelper:ControllerBase
 	{
-		public ImageHelper()
+		public readonly OfficialAccountApi _accountHelper;
+		public ImageHelper(SqlServerContext db, IConfiguration config)
 		{
-
+			_accountHelper = new OfficialAccountApi(db, config);
 		}
 
 		[HttpGet]
@@ -27,7 +30,6 @@ namespace OA.Controllers
             HttpWebResponse res = (HttpWebResponse)req.GetResponse();
             Stream sImg = res.GetResponseStream();
 
-            
 			Image<Rgba32> img = await Image.LoadAsync<Rgba32>(sImg);
 			string str = img.ToBase64String(img.Metadata.DecodedImageFormat);
 			string base64Str = str.Split(',')[1];
@@ -44,6 +46,20 @@ namespace OA.Controllers
 			sImg.Close();
 			res.Close();
 			req.Abort();
+        }
+
+		[HttpGet]
+		public async Task GetStaticPoster(string posterUrl, string scene, int x, int y, int width)
+		{
+
+			string qrCodeUrl = "../../OfficalAccountApi/ShowQrCodeStatic?scene=" + scene;
+            HttpWebRequest reqQr = (HttpWebRequest)WebRequest.Create(qrCodeUrl);
+            reqQr.Method = "GET";
+            HttpWebResponse resQr = (HttpWebResponse)reqQr.GetResponse();
+            Stream sQr = resQr.GetResponseStream();
+            //Image<Rgba32> imgQr = await Image.LoadAsync<Rgba32>(sQr);
+
+
         }
 	}
 }
