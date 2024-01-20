@@ -53,7 +53,7 @@ namespace OA.Controllers
 		public async Task GetStaticPoster(string posterUrl, string scene, int x, int y, int width)
 		{
 
-			string qrCodeUrl = "../../OfficalAccountApi/ShowQrCodeStatic?scene=" + scene;
+			string qrCodeUrl = "http://weixin.spineguard.cn/api/OfficialAccountApi/ShowQrCodeStatic?scene=" + scene;
             HttpWebRequest reqQr = (HttpWebRequest)WebRequest.Create(qrCodeUrl);
             reqQr.Method = "GET";
             HttpWebResponse resQr = (HttpWebResponse)reqQr.GetResponse();
@@ -67,7 +67,7 @@ namespace OA.Controllers
 			Stream sPoster = resPoster.GetResponseStream();
             Image<Rgba32> imgPoster = await Image.LoadAsync<Rgba32>(sPoster);
 			//imgPoster.Mutate()
-			imgPoster.Mutate(x => x.DrawImage(imgQr, 100));
+			imgPoster.Mutate(x => x.DrawImage(imgQr, 1));
 			string str = imgPoster.ToBase64String(imgPoster.Metadata.DecodedImageFormat);
             string base64Str = str.Split(',')[1];
             byte[] bArr = Convert.FromBase64String(base64Str);
