@@ -22,6 +22,23 @@ namespace OA.Controllers
 			_accountHelper = new OfficialAccountApi(db, config);
 		}
 
+		[NonAction]
+		public void ShowImage(Image<Rgba32> img)
+		{
+            string str = img.ToBase64String(img.Metadata.DecodedImageFormat);
+            string base64Str = str.Split(',')[1];
+            byte[] bArr = Convert.FromBase64String(base64Str);
+
+            Response.ContentType = img.Metadata.DecodedImageFormat.MimeTypes.ToArray()[0].Trim();
+            PipeWriter pw = Response.BodyWriter;
+            Stream s = pw.AsStream();
+            for (int i = 0; i < bArr.Length; i++)
+            {
+                s.WriteByte(bArr[i]);
+            }
+            s.Close();
+        }
+
 		[HttpGet]
 		public async Task GetImage(string url)
 		{
@@ -67,19 +84,17 @@ namespace OA.Controllers
 			Stream sPoster = resPoster.GetResponseStream();
             Image<Rgba32> imgPoster = await Image.LoadAsync<Rgba32>(sPoster);
 			//imgPoster.Mutate()
-			imgPoster.Mutate(x => x.DrawImage(imgQr, 1));
-			string str = imgPoster.ToBase64String(imgPoster.Metadata.DecodedImageFormat);
-            string base64Str = str.Split(',')[1];
-            byte[] bArr = Convert.FromBase64String(base64Str);
+			Point p = new Point(x, y);
+			imgPoster.Mutate(x => x.DrawImage(imgQr, p, 1));
+			ShowImage(imgPoster);
 
-            Response.ContentType = imgPoster.Metadata.DecodedImageFormat.MimeTypes.ToArray()[0].Trim();
-            PipeWriter pw = Response.BodyWriter;
-            Stream s = pw.AsStream();
-            for (int i = 0; i < bArr.Length; i++)
-            {
-                s.WriteByte(bArr[i]);
-            }
-            s.Close();
+			sPoster.Close();
+			resPoster.Close();
+			reqPoster.Abort();
+			sQr.Close();
+			resQr.Close();
+			reqQr.Abort();
+
 
         }
 	}
