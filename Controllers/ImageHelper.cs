@@ -11,11 +11,12 @@ using System.Security.Policy;
 
 namespace OA.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ImageHelper:ControllerBase
 	{
 		public readonly OfficialAccountApi _accountHelper;
+
 		public ImageHelper(SqlServerContext db, IConfiguration config)
 		{
 			_accountHelper = new OfficialAccountApi(db, config);
@@ -57,8 +58,28 @@ namespace OA.Controllers
             reqQr.Method = "GET";
             HttpWebResponse resQr = (HttpWebResponse)reqQr.GetResponse();
             Stream sQr = resQr.GetResponseStream();
-            //Image<Rgba32> imgQr = await Image.LoadAsync<Rgba32>(sQr);
+			Image<Rgba32> imgQr = await Image.LoadAsync<Rgba32>(sQr);
+			imgQr.Mutate(x => x.Resize(width, width));
 
+			HttpWebRequest reqPoster = (HttpWebRequest)WebRequest.Create(posterUrl);
+			reqPoster.Method = "GET";
+			HttpWebResponse resPoster = (HttpWebResponse)reqPoster.GetResponse();
+			Stream sPoster = resPoster.GetResponseStream();
+            Image<Rgba32> imgPoster = await Image.LoadAsync<Rgba32>(sPoster);
+			//imgPoster.Mutate()
+			imgPoster.Mutate(x => x.DrawImage(imgQr, 100));
+			string str = imgPoster.ToBase64String(imgPoster.Metadata.DecodedImageFormat);
+            string base64Str = str.Split(',')[1];
+            byte[] bArr = Convert.FromBase64String(base64Str);
+
+            Response.ContentType = imgPoster.Metadata.DecodedImageFormat.MimeTypes.ToArray()[0].Trim();
+            PipeWriter pw = Response.BodyWriter;
+            Stream s = pw.AsStream();
+            for (int i = 0; i < bArr.Length; i++)
+            {
+                s.WriteByte(bArr[i]);
+            }
+            s.Close();
 
         }
 	}
