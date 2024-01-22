@@ -21,6 +21,7 @@ namespace OA
         public DbSet<User> user { get; set; }
         public DbSet<EfTest>? EfTest { get; set; }
         public DbSet<MiniUser> miniUser { get; set; }
+        public DbSet<ChannelFollow> channelFollow { get; set; }
         //public DbSet<MiniApp.Models.MiniSession> miniSession { get; set; }
     }
 }

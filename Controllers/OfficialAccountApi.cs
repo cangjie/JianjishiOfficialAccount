@@ -234,9 +234,9 @@ namespace OA.Controllers
                 return (await reply.Reply()).Trim();
 
             }
-            catch
+            catch(Exception err)
             {
-
+                Console.WriteLine(err.ToString());
             }
             
             return "success";

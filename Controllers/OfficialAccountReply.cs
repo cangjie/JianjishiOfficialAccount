@@ -5,6 +5,7 @@ using OA;
 using OA.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace OA.Controllers.Api
 {
@@ -20,6 +21,8 @@ namespace OA.Controllers.Api
 
         private string _domain = "";
 
+        private readonly ChannelFollowController _channelHelper;
+
         public OfficialAccountReply(SqlServerContext context,
             IConfiguration config, OARecevie message)
         {
@@ -28,6 +31,9 @@ namespace OA.Controllers.Api
             _settings = Settings.GetSettings(_config);
             _domain = _settings.domainName.Trim();
             _message = message;
+            _channelHelper = new ChannelFollowController(context, config);
+
+
         }
 
         public async Task<string> Reply()
@@ -41,7 +47,7 @@ namespace OA.Controllers.Api
             if (user != null)
             {
                 var mUserList = await _db.miniUser.Where(m => m.union_id != null
-                    && m.union_id.Trim().Equals(user.oa_union_id)).ToListAsync();
+                    && m.union_id.Trim().Equals(user.oa_union_id)).AsNoTracking().ToListAsync();
                 if (mUserList.Count > 0)
                 {
                     mUser = mUserList[0];
@@ -103,7 +109,7 @@ namespace OA.Controllers.Api
                         break;
                     case "subscribe":
                     case "scan":
-                        DealSubscribe(_message);
+                        await DealSubscribe(_message);
                         break;
                     default:
                         retStr = "success";
@@ -115,9 +121,50 @@ namespace OA.Controllers.Api
             return retStr.Trim();
         }
 
-        public string DealSubscribe(OARecevie message)
+        public async Task<string> DealSubscribe(OARecevie message)
         {
+            string[] keyArr = message.EventKey.Split('_');
+            int channelUserId = 0;
+            int currentUserId = 0;
+
+            for (int i = 0; i < keyArr.Length; i++)
+            {
+                string[] subKey = keyArr[i].Split('-');
+                if (subKey.Length == 2)
+                {
+                    switch (subKey[0].Trim())
+                    {
+                        case "userid":
+                            try
+                            {
+                                channelUserId = int.Parse(subKey[1].Trim());
+                            }
+                            catch
+                            {
+
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+            
+            var userList = await _db.oAUser.Where(u => u.open_id.Trim().Equals(message.FromUserName.Trim()))
+                .AsNoTracking().ToListAsync();
+            if (userList.Count > 0)
+            {
+                currentUserId = userList[0].user_id;
+
+                await _channelHelper.SetFollow(currentUserId, channelUserId);
+            }
+            
             SendServiceMessageMApp(message.FromUserName.Trim(), "点我预约", "pages/product/product_list", "6saVwTsGr7hh8G_dlZdVbFuyMJekFzMY-zsH18dhDZiJnJCGSKg4qD-mK8ed-Tvc");
+
+
+           
             return "success";
         }
 
