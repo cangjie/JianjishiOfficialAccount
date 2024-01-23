@@ -160,9 +160,16 @@ namespace OA.Controllers.Api
 
                 await _channelHelper.SetFollow(currentUserId, channelUserId);
             }
-            
-            SendServiceMessageMApp(message.FromUserName.Trim(), "点我预约", "pages/product/product_list", "6saVwTsGr7hh8G_dlZdVbFuyMJekFzMY-zsH18dhDZiJnJCGSKg4qD-mK8ed-Tvc");
 
+            if (message.EventKey.IndexOf("card") >= 0)
+            {
+
+                SendServiceMessageMApp(message.FromUserName.Trim(), "购买次卡", "pages/product/product_card_list", "6saVwTsGr7hh8G_dlZdVbFuyMJekFzMY-zsH18dhDZiJnJCGSKg4qD-mK8ed-Tvc");
+            }
+            else
+            {
+                SendServiceMessageMApp(message.FromUserName.Trim(), "点我预约", "pages/product/product_list", "6saVwTsGr7hh8G_dlZdVbFuyMJekFzMY-zsH18dhDZiJnJCGSKg4qD-mK8ed-Tvc");
+            }
 
            
             return "success";
